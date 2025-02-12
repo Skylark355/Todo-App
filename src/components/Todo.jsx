@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 function Todo(props) {
   const [isEditting, setEditting] = useState(false);
   const [newName, setNewName] = useState("");
+
+  const editFieldRef = useRef(null);
+  const editButtonRef = useRef(null);
 
   function handleChange(e) {
     setNewName(e.target.value);
@@ -27,10 +30,15 @@ function Todo(props) {
           className="todo-text"
           value={newName}
           onChange={handleChange}
+          ref={editFieldRef}
         />
       </div>
       <div className="btn-group">
-        <button type="button" className="btn-todo-cancel" onClick={() => setEditting(false)}>
+        <button
+          type="button"
+          className="btn-todo-cancel"
+          onClick={() => setEditting(false)}
+        >
           Cancel{" "}
           <span className="visually-hidden"> remaining {props.name}</span>
         </button>
@@ -58,7 +66,12 @@ function Todo(props) {
       </div>
 
       <div className="btn-group">
-        <button type="button" className="btn" onClick={() => setEditting(true)}>
+        <button
+          type="button"
+          className="btn"
+          onClick={() => setEditting(true)}
+          ref={editButtonRef}
+        >
           Edit <span className="visually-hidden"> {props.name}</span>
         </button>
 

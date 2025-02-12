@@ -4,8 +4,17 @@ import Form from "./components/Form";
 import FilteredButton from "./components/FilterButton";
 import { nanoid } from "nanoid";
 
+const Filter_MAP = {
+  All: () => true,
+  Active: (task) => !task.completed,
+  completed: (task) => task.completed,
+};
+
+const FILTER_NAMES = Object.keys(Filter_MAP);
+
 function App(props) {
   const [tasks, setTasks] = useState(props.tasks);
+  const [filter, setFilter] = useState("All");
 
   function toggleTaskCompleted(id) {
     const updatedTasks = tasks.map((task) => {
@@ -42,7 +51,9 @@ function App(props) {
 
   //end of edit function
 
-  const taskList = tasks?.map((task) => (
+  const taskList = tasks
+  .filter(Filter_MAP[filter])
+  .map((task) => (
     <Todo
       id={task.id}
       name={task.name}
@@ -51,6 +62,15 @@ function App(props) {
       toggleTaskCompleted={toggleTaskCompleted}
       deleteTask={deleteTask}
       editTask={editTask}
+    />
+  ));
+
+  const filteredList = FILTER_NAMES.map((name) => (
+    <FilteredButton
+      key={name}
+      name={name}
+      isPressed={name === filter}
+      setFilter={setFilter}
     />
   ));
 
@@ -63,11 +83,7 @@ function App(props) {
       <h1>Todo Matic</h1>
       <Form addTask={addTask} />
 
-      <div className="filters btn-group stack-exception">
-        <FilteredButton />
-        <FilteredButton />
-        <FilteredButton />
-      </div>
+      <div className="filters btn-group stack-exception"> {filteredList}</div>
 
       <h2 id="list-heading">{headingText}</h2>
       <ul
